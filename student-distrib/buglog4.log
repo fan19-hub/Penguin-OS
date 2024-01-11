@@ -1,0 +1,41 @@
+CheckPoint:
+    CP4
+
+<--------------------------------------------------------->
+                          BUG 1                          
+<--------------------------------------------------------->
+Time:
+    2022.4.13.
+Creator:
+    Zhongqi Wu.
+Description:
+     when we check syserr, we could not pass the 6th test, which is vidmap test.
+Solution:
+   We check the vidmap part of syserr , and it shows fail happens when the input address is not checked. Then we find we use screenstart as the address, which is avtually
+**screenstart so our check is useless. Then we check whether **screenstart is between 128MB and 132MB, and it worked.
+
+
+<--------------------------------------------------------->
+                          BUG 2                          
+<--------------------------------------------------------->
+Time:
+    2022.4.14.
+Creator:
+    Zhongqi Wu.
+Description:
+   After send fish command , nothing showes and all functions except vidmap is well implemented.
+Solution:
+   We thought problem is in vidmap.And finally, we find we check whether *screenstart is NULL , if it is NULL , then return.
+Because *screenstart store a physical address which can be NULL, and fact shows it is exactly NULL so we do not execute the function body and return -1.
+We delete this check, and everything is well. 
+
+
+
+    Then problem solved.
+
+
+
+1.terminal_shift fist appear terminal 需要terminal_now=cur_dis存pcb
+2.keyboard bug. 需keyboard 开始映射 结尾转换回来
+3.enter在执行看的terminal才执行
+4.pit program map

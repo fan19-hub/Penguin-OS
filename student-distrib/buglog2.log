@@ -1,0 +1,48 @@
+<--------------------------------------------------------->
+                          BUG 1                          
+<--------------------------------------------------------->
+Time:
+    2022.3.20.
+Creator:
+    Xin Wang.
+Description:
+    We can only type and print certain keys into screen. And The number of keys we can print is limited.
+Solution: 
+    I forget to send_eoi in one case in the keyboard handler. So when I use this case the PIC cannot receive the eoi signal which willl result in no more work can be assigned to keyboard from PIC.
+<--------------------------------------------------------->
+                          BUG 2                          
+<--------------------------------------------------------->
+Time:
+    2022.3.20.
+Creator:
+    Xin Wang.
+Description:
+    The capslock key work weirdly.
+Solution: 
+    The way I update it is the same to shift key, which is wrong because we have to mantain its states untill next key press instead of this key release.
+<--------------------------------------------------------->
+                          BUG 3                         
+<--------------------------------------------------------->
+Time:
+    2022.3.28.
+Creator:
+    Ruochen Wu.
+Description:
+    When test dir_read, no matter what fd is sent to dir_read,test returns FAIL.
+Solution: 
+    the return value of dir_read was set to the return value of read_dentry_by_index, which is 0 or 1.
+    When test finds dir_read returns 0, it will return FAIL.
+    So I change the return value of dir_read to the file length.
+
+
+<--------------------------------------------------------->
+                          BUG 4                         
+<--------------------------------------------------------->
+Time:
+    2022.3.28.
+Creator:
+    Ruochen Wu.
+Description:
+    When sending &fd=NULL to file_open, the test fails.
+Solution: 
+    I forgot to check if fd is NULL in file_open. So I add it.

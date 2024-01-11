@@ -1,0 +1,27 @@
+CheckPoint:
+    CP5
+
+<--------------------------------------------------------->
+                          BUG 1                          
+<--------------------------------------------------------->
+Time:
+    2022.5.1
+Creator:
+    Xin Wang.
+Description:
+     Cannot type in new terminal, but can type in terminal 1
+Solution:
+     Because the first shell is open in the kernel function while the shell in other terminals are open by "alt+shift"(in keyboard handler). When we press "alt+shift", we will go to the new terminal and open a new shell. But the shell is a infinite loop, which means we can never get the eoi of "alt+shift" and we cannot use keyboard anymore.
+      The solution is to add send_eoi at the begining of the keyboard handler.
+
+<--------------------------------------------------------->
+                          BUG 2                        
+<--------------------------------------------------------->
+Time:
+    2022.5.1
+Creator:
+    Xin Wang.
+Description:
+     The cursor of the display terminal change with the screen_x, screen_y position in backtage termianl.
+Solution:
+     We only change the screen_x, screen_y when the scheduled terminal is the display terminal. If not, we change the cursor position in the terminal structure by a new function.

@@ -1,0 +1,99 @@
+CheckPoint:
+    CP3
+
+<--------------------------------------------------------->
+                          BUG 1                          
+<--------------------------------------------------------->
+Time:
+    2022.4.9.
+Creator:
+    Ruochen Wu.
+Description:
+    Page Fault due to the wrong definition of the buffer pointer.
+    uint8_t* buf; buf is delcared by never assigned with actual memory. And it is directly used, causing page fault.
+Solution:
+    Use the static memory allocation: uint8_t buf[20]
+
+
+<--------------------------------------------------------->
+                          BUG 2                          
+<--------------------------------------------------------->
+Time:
+    2022.4.9.
+Creator:
+    Ruochen Wu.
+Description:
+    Page Fault due to the wrong utility of iret
+    When I need to use iret in C function, I wrote a seperate assembly function to include iret and then I call it in C function.
+    But inside the assembly function, the stack has already changed. 
+Solution:
+    Use the inline assembly code in C function to handle iret
+
+
+<--------------------------------------------------------->
+                          BUG 3                          
+<--------------------------------------------------------->
+Time:
+    2022.4.10.
+Creator:
+    Ruochen Wu.
+Description:
+    Page fault due to the wrong correspondence betweeen virtual address and physical address 
+    In read_data, the program told us "buffer out of bound" and raises the page fault
+Solution:
+    Revise the correspondence between virtual address and physical address.
+
+
+<--------------------------------------------------------->
+                          BUG 4                          
+<--------------------------------------------------------->
+Time:
+    2022.4.10.
+Creator:
+    Ruochen Wu.
+Description:
+    Page fault due to the U/S bit in page
+    I did not set the U/S bit to 1 for the page used in execute(). Thus it is still in supervisor mode and raises the protection error when iret 
+Solution:
+    Set the U/S bit to 1.
+<--------------------------------------------------------->
+                          BUG 5                          
+<--------------------------------------------------------->
+Time:
+    2022.4.11.
+Creator:
+    Fan Yang.
+Description:
+    Dentry index out of range due to the incorrect file position update.
+    When I run ls, only few files are listed and dentry index out of range is reported
+Solution:
+    Because I update the file position by the return value of operation_table->read() in the read(),
+    However, for dir_read, the file postion should +1 everytime. But its return value is the length of the filename read. 
+    Therefore, I updated the file position inside dir_read() and file_read().
+<--------------------------------------------------------->
+                          BUG 6                          
+<--------------------------------------------------------->
+Time:
+    2022.4.11.
+Creator:
+    Fan Yang.
+Description:
+    Stuck inside the rtc_read due to the cirtical section setting
+    When I run the pingpong in shell, only the first line is printed, then the program get stuck.
+Solution:
+    add sti() at the beginning of read and write to set IF.
+
+<--------------------------------------------------------->
+                          BUG 7                          
+<--------------------------------------------------------->
+Time:
+    2022.4.11.
+Creator:
+    Fan Yang.
+Description:
+    Compilation Error: multiple definition of stdin_opt_table
+    I used the ifndef to avoid the repeated reference. But the multiple definition still occurs    
+Solution:
+    I move the initialization of stdin_opt_table from systemcall.h to systemcall.c.
+    Then problem solved.
+

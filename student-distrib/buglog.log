@@ -1,0 +1,126 @@
+<=========================================================>
+<=================>    BUG LOG HEADER   <=================>
+<=========================================================>
+Assignment:
+    MP3
+CheckPoint:
+    CP1
+CreateTime:
+    2022.3.20
+
+<--------------------------------------------------------->
+                          BUG 1                          
+<--------------------------------------------------------->
+Time:
+    2022.3.20.
+Creator:
+    Ruochen Wu.
+Description:
+    the screen can only show one character of keyboard
+Solution: 
+    For send_eoi(), we should send the data to 0x70 instead of 0x71. The absence of EOI causes this problem.
+
+<--------------------------------------------------------->
+                          BUG 2                          
+<--------------------------------------------------------->
+Time:
+    2022.3.20.
+Creator:
+    Fan Yang.
+Description:
+    rtc has no reaction and rtc_handler is not called
+Solution: 
+    It is proved that the i8259_init() and enable_irq() have some problems causing the failure of PIC's functionality.
+    For i8259_init(), the ICW2 and ICW3 are different for master and slave.
+    For enable_irq(), the mask should be kept after modification
+
+<--------------------------------------------------------->
+                          BUG 3                          
+<--------------------------------------------------------->
+Time:
+    2022.3.21.
+Creator:
+    Ruochen Wu and Zhongqi Wu.
+Description:
+    An infinite loop of information on the screen when causing an exception
+Solution:
+    use while(1); to stop it.
+
+
+<--------------------------------------------------------->
+                          BUG 4                          
+<--------------------------------------------------------->
+Time:
+    2022.3.21.
+Creator:
+    Ruochen Wu and Zhongqi Wu.
+Description:
+    double_fault occurs when testing other exceptions
+Solution: 
+    that's because we didn't add interrupt handler. So we add it.
+
+
+
+<--------------------------------------------------------->
+                          BUG 5                          
+<--------------------------------------------------------->
+Time:
+    2022.3.22.
+Creator:
+    Xin Wang.
+Description:
+    In paging test, the page directory and page table is not correct.
+Solution:
+    Actually my paging works well, the problem is due to my inproper page directory entry content represent in my testcase.
+    Because the processor will set the access bit and dirty bit when I use these pages but I forget to set them in my test.
+    Change the page directory entry content represent in my testcase to proper one (with access bit and dirty bit set).
+
+
+<--------------------------------------------------------->
+                          BUG 6                          
+<--------------------------------------------------------->
+Time:
+    2022.3.22.
+Creator:
+    Xin Wang.
+Description:
+    In paging test, the page directory is (still) incorrect but page table is correct. And when I type info mem the "-r-" is shown instead of "-rw-" which I set.
+Solution:
+    After I print out the entry in the page directory and page table, I find the problem is that the R_W bit of page directory entry is not set successfully but that of page table is set successfully (But actually I try to set it in the initial for loop). 
+    According to the combined page-directory and page-table protection in page 139 table 4-2 of (https://courses.engr.illinois.edu/ece391/sp2022/secure/references/IA32-ref-manual-vol-3.pdf), the final page R_W property will be set as read only.
+    So obviously the problem actually is how can I set the R_W bit properly for page directory. Because my page table works well and I compare the difference between the way I set the R_W bits for these two stuffs. I change the code: "page_directory[i] = R_W;" as "page_directory[i] = 0|R_W;".
+    It works well then. (No one know the reason)
+<--------------------------------------------------------->
+                          BUG 7                          
+<--------------------------------------------------------->
+Time:
+    2022.3.19.
+Creator:
+    Zhongqi Wu.
+Description:
+     When I compiled my idt file, it raised an error that "expected a ) before id ", which exists in the declaration of exception_func{void exception_handler(uint32_t id,uint32_t flags,struct x86_register regs,uint32_t error);}. I was confused because there is no error in exception_func in idt.c and the definition function head are the same as declaration.
+Solution: 
+    I mask all the content of functions in idt.c and it still raised the error. Then I delete the variable ,which still did not work. Finally, I consider if the type of variable is not available ,liek "uint32_t", so I include "lib.h".Finally, it works.
+<--------------------------------------------------------->
+                          BUG 8                          
+<--------------------------------------------------------->
+Time:
+    2022.3.20.
+Creator:
+    Zhongqi Wu.
+Description:
+    When I run the devide_error test, the printed message were rolling on the screen and it crashed. I thought maybe I lack the halt step after I print the exception message. 
+Solution: 
+    I read mp3_hint carefully, and found I just needed to add while (1) loop to halt the program.
+<--------------------------------------------------------->
+                          BUG 9                          
+<--------------------------------------------------------->
+Time:
+    2022.3.20.
+Creator:
+    Zhongqi Wu.
+Description:
+    double_fault always occured when testing other exceptions
+Solution: 
+    We searched the Internet to find what double fault means and found it is due to interrupt error.Then we thought we have not added keyboard and rtc into program.After we added them, the problem was solved.
+
